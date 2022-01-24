@@ -1,0 +1,11 @@
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvelin-->selain: Status code: 201 created
+
+note over selain:
+Selaimessa javascript parsii json datan, 
+lisää sen olemassa olevaan muistiinpano taulukkoon,
+Piirtää sen selaimelle näkyviin, 
+ja lopuksi vielä lähettää päivitetyn taulukon palvelimelle
+end note
+
+selain->palvelin: HTTP POST (JSON.merkkijono)
