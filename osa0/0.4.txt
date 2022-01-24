@@ -1,0 +1,32 @@
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+note over palvelin:
+Palvelin luo uuden olion lomakkeeseen 
+syötetystä datasta ja lisää sen notes taulukkoon.
+end note
+
+palvelin-->selain: Status code: 302 Location: /exampleapp/notes
+
+note over selain:
+Kyseessä redirectaus pyyntö statuskoodi 302
+Eli uusi HTTP GET pyyntö sijaintiin /exampleapp/notes
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+palvelin-->selain: HTML-koodi
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin-->selain: main.css
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+palvelin-->selain: main.js
+
+note over selain:
+Selain suorittaa js-koodin
+joka taas pyytää JSON-datan palvelimelta
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin-->selain: [{"content":"syötetyt datat", date:"päiväys"}]...
+
+note over selain:
+Selain suorittaa tapahtumakäsittelijän
+joka tuo jsonista tulleet muistiinpanot näytölle
+end note
