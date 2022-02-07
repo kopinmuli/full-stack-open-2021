@@ -6,16 +6,12 @@ const Phonebook = ({name, number }) => {
   )
 }
 
-const checksame = ({name, number }) => {
-  var okok = false
-console.log(okok);
-  return okok
-}
-
-
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number:"1234", id:0}
+    { name: 'Arto Hellas', number:"1234", id:0},
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -55,6 +51,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <h2>add a new</h2>
       <form onSubmit={addNew}>
         <div>
           name: <input 
