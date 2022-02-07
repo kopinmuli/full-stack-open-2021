@@ -34,10 +34,11 @@ const App = () => {
         window.alert(`${newName} is already added to phonebook`)
         return
       }
+    }
     setPersons(persons.concat(phonebookObject))
     setNewName('')
     setNewNumber('')
-    }
+    
   }
 
   const handlePhonebookNameChange = (event) => {
