@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
+import Phonebook from './components/Phonebook'
+import Filter from './components/Filter'
+import Form from './components/Form'
 
-const Phonebook = ({name, number }) => {
-  return (
-    <p>{name} {number}</p>
-  )
-}
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number:"1234", id:0},
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+    { name: 'Arto Hellas', number:"1234"},
+    { name: 'Ada Lovelace', number: '39-44-5323523'},
+    { name: 'Dan Abramov', number: '12-43-234345'},
+    { name: 'Mary Poppendieck', number: '39-23-6423122'}
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState("");
 
+  const personsToShow = persons.filter(person => person.name.includes(filter))
+
+  const handleFilter = (event) => {
+    setFilter(event.target.value);
+  };
 
   const addNew = (event) => {
     const personsNames = persons.map(e => e.name)
@@ -47,30 +51,16 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-
+ 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Filter onChange={handleFilter}/>
       <h2>add a new</h2>
-      <form onSubmit={addNew}>
-        <div>
-          name: <input 
-                  value={newName} 
-                  onChange={handlePhonebookNameChange}
-                />
-        </div>
-        <div>number: <input
-                       value={newNumber} 
-                       onChange={handlePhonebookNumberChange}
-                  />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Form submit={addNew} nameinput={newName} nameonChange={handlePhonebookNameChange} numberinput={newNumber} numberonChange={handlePhonebookNumberChange}/>   
       <h2>Numbers</h2>
-      {persons.map(person =>
-          <Phonebook key={person.id} name={person.name} number={person.number} />
+      {personsToShow.map(personsToShow =>
+          <Phonebook key={personsToShow.name} name={personsToShow.name} number={personsToShow.number} />
         )}
     </div>
   )
@@ -78,3 +68,6 @@ const App = () => {
 }
 
 export default App
+
+
+
