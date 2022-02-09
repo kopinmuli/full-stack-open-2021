@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import PrintPersons from './components/PrintPersons'
-import FilterInput from './components/Filter'
+import FilterInput from './components/FilterInput'
 import Form from './components/Form'
 
 
