@@ -1,9 +1,10 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/persons'
 
-const getAll = () => {
+const getAll = async () => {
   const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+  const response = await request
+  return response.data
 }
 
 const create = async newObject => {
@@ -12,8 +13,14 @@ const create = async newObject => {
   return response.data
 }
 
-const update = async newObject => {
-  const request = axios.put(baseUrl, newObject)
+const update = async (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  const response = await request
+  return response.data
+}
+
+const remove = async (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`)
   const response = await request
   return response.data
 }
@@ -21,5 +28,6 @@ const update = async newObject => {
 export default { 
   getAll, 
   create,
-  update
+  update,
+  remove
 }
