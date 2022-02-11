@@ -13,7 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState("");
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const personsToShow = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
  
@@ -21,13 +21,7 @@ const App = () => {
     service
     .getAll()
     .then(response => {
-      setPersons(response)
-      setErrorMessage(
-        ``
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 1)
+      setPersons(response)  
       })
   }, [])
 
@@ -108,7 +102,7 @@ const App = () => {
       <h2>add a new</h2>
       <Form submit={addNew} nameinput={newName} nameonChange={handlePhonebookNameChange} numberinput={newNumber} numberonChange={handlePhonebookNumberChange}/>   
       <h2>Numbers</h2>
-      {personsToShow.map(personsToShow =><><PrintPersons name={personsToShow.name} number={personsToShow.number}/><button key={personsToShow.name} onClick={() => handleDelete(personsToShow.id,personsToShow)}>delete</button></>)}
+      {personsToShow.map(personsToShow =><PrintPersons key={personsToShow.name.toString()} name={personsToShow.name} number={personsToShow.number} onclick={() => handleDelete(personsToShow.id, personsToShow)}/>)}
     </div>
   )
 

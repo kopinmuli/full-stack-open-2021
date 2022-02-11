@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import App from '../App';
+import {handleDelete} from '../App';
 
 
-const PrintPersons = ({name, number}) => {
+const PrintPersons = ({name, number, onclick}) => {
     
     return (
       <>
-        <p key={name}> {name} {number}</p>
+        <p key={name+number}> {name} {number}</p>
+        <button key={name} onClick={onclick}>delete</button>
       </>
     )
   }

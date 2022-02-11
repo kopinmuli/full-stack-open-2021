@@ -2,7 +2,7 @@ import React from "react";
 
 const Form = (props) => {
   return (
-    <form onSubmit={props.submit}>
+    <form key="form" onSubmit={props.submit}>
         <div>
           name: <input 
                   value={props.nameinput} 
