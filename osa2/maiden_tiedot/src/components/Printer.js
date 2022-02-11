@@ -1,4 +1,5 @@
 import Weather from "./Weather";
+import React from "react";
 
 
 const Button = ({ handleClick }) => {
@@ -6,9 +7,9 @@ const Button = ({ handleClick }) => {
     <button  onClick={handleClick}>
       show
     </button>
-    
   )
 }
+
 
 const PrintLanguages = ({country}) => {
     const languages = []
@@ -27,7 +28,7 @@ const PrintLanguages = ({country}) => {
     
     return(
     <>
-      <h1 key={country.name.common}>{country.name.common}</h1>
+      <h1>{country.name.common}</h1>
           <br></br>
           capital {country.capital}
           <br></br>
@@ -35,11 +36,11 @@ const PrintLanguages = ({country}) => {
           <br></br>
           <br></br>
           <h3>Languages</h3>
-          <PrintLanguages country={country.languages}/>
+          <PrintLanguages key={country.name.common} country={country.languages}/>
           <br></br>
           <img src={country.flags.png} alt={country.name.common}></img>
           <h3>Weather in {country.capital}</h3>
-          <Weather city={country.capital}></Weather>
+          <Weather key={country.name.common} city={country.capital}></Weather>
           </>
     );}
   
@@ -57,22 +58,20 @@ const PrintLanguages = ({country}) => {
 const Printer = ({countriesMatched, length}) => {
     
     if (length >= 11) {return(
-      <p>Too many matches, specify another filter</p>
+
+      <p key="toomany">Too many matches, specify another filter</p>
       )}
     if (length === 1) {return(
-      <PrintCountry country={countriesMatched[0]}/>
+      <PrintCountry key="printcountry" country={countriesMatched[0]}/>
       )}
     
 
     return(
-      <p>
-      {countriesMatched.map(countriesToPrint =>
-      <>
-      <PrintCountries country={countriesToPrint}/>
-      <Button key={countriesToPrint.name.common}/>
-      </>)}
-      
-      </p>
+     
+      <div>
+      {countriesMatched.map(countriesToPrint =><><PrintCountries key={countriesToPrint.name.common.toString()+"country"} country={countriesToPrint}/><Button key={countriesToPrint.name.common.toString()+"button"}/></>)} 
+      </div>
+     
     );}
 
     export default Printer;

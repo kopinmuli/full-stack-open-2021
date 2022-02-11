@@ -32,8 +32,8 @@ const App = () => {
   
   return (
    <div>
-     find countries <input onChange={handleInput}></input>
-     <Printer length={countriesMatched.length} countriesMatched={countriesMatched}/>
+     find countries <input key="input" onChange={handleInput}></input>
+     <Printer key="printer" length={countriesMatched.length} countriesMatched={countriesMatched}/>
    </div>
   );
 }
