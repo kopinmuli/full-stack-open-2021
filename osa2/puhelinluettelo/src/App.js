@@ -3,6 +3,8 @@ import PrintPersons from './components/PrintPersons'
 import FilterInput from './components/FilterInput'
 import Form from './components/Form'
 import service from './services/service'
+import Notification from './components/Notification'
+import './index.css'
 
 
 const App = () => {
@@ -11,13 +13,21 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState('')
+
   const personsToShow = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
-  
+ 
   useEffect(() => { 
     service
     .getAll()
     .then(response => {
       setPersons(response)
+      setErrorMessage(
+        ``
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 1)
       })
   }, [])
 
@@ -32,13 +42,17 @@ const App = () => {
     for(let i = 0; i < persons.length; i++){
       if(phonebookObject.name.toUpperCase() === personsNames[i].toUpperCase()){
         foundId=persons[i].id;
-        window.alert(`${newName} is already added to phonebook, updated number`)
         service
           .update(foundId, phonebookObject)
           .then(response =>{
             setPersons(persons.map(person => person.id !== foundId ? person : response))
             foundId=0;
+            setErrorMessage(`${newName} is already added to phonebook, updated number`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 10000)
           })
+            .catch(error => {alert(`there is no contact called ${newName}, cant update number. please refresh the browser.`)})
           return
       }
     }
@@ -47,7 +61,13 @@ const App = () => {
       .then(response => {
         console.log(response)
         setPersons(persons.concat(response))
-      })
+        setErrorMessage(
+          `New contact ${newName} created.`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 10000)
+      }).catch(error => {alert(`cant create ${newName}, something went wrong, please refresh the browser and try again!`)})
         setNewName('')
         setNewNumber('')
   }
@@ -59,7 +79,13 @@ const App = () => {
     .then(response =>{
       console.log(response);
       setPersons(newarray)
-    }) 
+      setErrorMessage(
+        `Contact ${deleteThis.name} deleted.`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 10000)
+    }).catch(error => {alert(`there is no contact called ${newName}, cant delete. please refresh the browser.`)}) 
   }
 
   const handleFilter = (event) => {
@@ -77,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <FilterInput onChange={handleFilter}/>
       <h2>add a new</h2>
       <Form submit={addNew} nameinput={newName} nameonChange={handlePhonebookNameChange} numberinput={newNumber} numberonChange={handlePhonebookNumberChange}/>   
