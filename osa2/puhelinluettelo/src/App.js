@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from "axios"
 import PrintPersons from './components/PrintPersons'
 import FilterInput from './components/FilterInput'
 import Form from './components/Form'
-
-
-
+import service from './services/service'
 
 
 const App = () => {
@@ -14,15 +12,25 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState("");
+  const personsToShow = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
   
   useEffect(() => { 
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    service
+    .getAll()
+    .then(response => {
+      setPersons(response)
       })
   }, [])
-  
+
+  const handleDelete = (deleteThis) => {
+    const newarray=persons.filter(persons => persons.name !== deleteThis)
+    service
+    .update(newarray)
+    .then(response =>{
+      setPersons(response)  
+    })
+  }
+
   const handleFilter = (event) => {
     setFilter(event.target.value);
   };
@@ -33,7 +41,6 @@ const App = () => {
     const phonebookObject = {
       name: newName,
       number: newNumber,
-      id:persons.length
     }
     for(let i = 0; i < persons.length; i++){
       if(phonebookObject.name === personsNames[i]){
@@ -41,11 +48,17 @@ const App = () => {
         return
       }
     }
-    setPersons(persons.concat(phonebookObject))
-    setNewName('')
-    setNewNumber('')
-    
+      service
+      .create(phonebookObject)
+      .then(response => {
+        console.log(response)
+        setPersons(persons.concat(response))
+      })
+        setNewName('')
+        setNewNumber('')
   }
+
+
 
   const handlePhonebookNameChange = (event) => {
     setNewName(event.target.value)
@@ -64,7 +77,7 @@ const App = () => {
       <h2>add a new</h2>
       <Form submit={addNew} nameinput={newName} nameonChange={handlePhonebookNameChange} numberinput={newNumber} numberonChange={handlePhonebookNumberChange}/>   
       <h2>Numbers</h2>
-      <PrintPersons persons={persons} filter={filter}/>
+      {personsToShow.map(personsToShow =><><PrintPersons name={personsToShow.name} number={personsToShow.number}/><button key={personsToShow.name} onClick={() => handleDelete(personsToShow.name)}>delete</button></>)}
     </div>
   )
 

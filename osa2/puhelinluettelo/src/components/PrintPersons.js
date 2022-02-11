@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect } from 'react'
+import App from '../App';
 
 
-const PrintPersons = ({persons, filter }) => {
-    const personsToShow = persons.filter(person => person.name.includes(filter))
+const PrintPersons = ({name, number}) => {
+    
     return (
       <>
-      {personsToShow.map(personsToShow =>
-        <p key={personsToShow.name}> {personsToShow.name} {personsToShow.number}</p>
-      )}
+        <p key={name}> {name} {number}</p>
       </>
     )
   }
