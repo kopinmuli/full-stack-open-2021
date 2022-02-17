@@ -52,7 +52,7 @@ const App = () => {
                   }, 10000)
                 })
                 .catch(error => {
-                  setErrorMessage('Cant find contact from database, please refresh browser and try again')
+                  setErrorMessage(error.response.data.error)
                   setTimeout(() => {
                     setErrorMessage(null)
                   }, 10000)
@@ -68,7 +68,12 @@ const App = () => {
             setTimeout(() => {
               setErrorMessage(null)
             }, 10000)
-          }).catch(error => {alert(`cant create ${newName}, something went wrong, please refresh the browser and try again!`)}) 
+          }).catch(error => {
+            setErrorMessage(error.response.data.error)
+                  setTimeout(() => {
+                    setErrorMessage(null)
+                  }, 10000)
+                })
       } 
       setNewName('')
       setNewNumber('')
