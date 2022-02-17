@@ -12,69 +12,76 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState('');
   const [errorMessage, setErrorMessage] = useState(null)
+  let personsToShow = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
 
-  const personsToShow = persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
- 
   useEffect(() => { 
     service
     .getAll()
     .then(response => {
-      setPersons(response)  
+      setPersons(response)
       })
   }, [])
 
   const addNew = (event) => {
+    
     const personsNames = persons.map(e => e.name)
     event.preventDefault()
-    let foundId;
+
     const phonebookObject = {
       name: newName,
       number: newNumber,
     }
-    for(let i = 0; i < persons.length; i++){
-      if(phonebookObject.name.toUpperCase() === personsNames[i].toUpperCase()){
-        foundId=persons[i].id;
-        service
-          .update(foundId, phonebookObject)
-          .then(response =>{
-            setPersons(persons.map(person => person.id !== foundId ? person : response))
-            foundId=0;
-            setErrorMessage(`${newName} is already added to phonebook, updated number`)
+
+    const personFound = personsNames.includes(phonebookObject.name);
+    const oldPerson = persons.filter(e => e.name === newName)
+    const _id = oldPerson.map(e => e.id)[0]
+
+    if (personFound) {
+        window.confirm(
+          `${newName} is already on phonebook, want to update number instead?`
+        ) &&
+              service
+                .update(_id, phonebookObject)
+                .then(returnedPerson => {
+                  setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+                  setErrorMessage(`${newName} updated.`)
+                  setTimeout(() => {
+                    setErrorMessage(null)
+                  }, 10000)
+                })
+                .catch(error => {
+                  setErrorMessage('Cant find contact from database, please refresh browser and try again')
+                  setTimeout(() => {
+                    setErrorMessage(null)
+                  }, 10000)
+                })
+           
+      } else {
+          service
+            .create(phonebookObject).then(response => {
+            setPersons(persons.concat(response))
+            setErrorMessage(
+              `New contact ${newName} created.`
+            )
             setTimeout(() => {
               setErrorMessage(null)
             }, 10000)
-          })
-            .catch(error => {alert(`there is no contact called ${newName}, cant update number. please refresh the browser.`)})
-          return
-      }
-    }
-      service
-      .create(phonebookObject)
-      .then(response => {
-        console.log(response)
-        setPersons(persons.concat(response))
-        setErrorMessage(
-          `New contact ${newName} created.`
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 10000)
-      }).catch(error => {alert(`cant create ${newName}, something went wrong, please refresh the browser and try again!`)})
-        setNewName('')
-        setNewNumber('')
+          }).catch(error => {alert(`cant create ${newName}, something went wrong, please refresh the browser and try again!`)}) 
+      } 
+      setNewName('')
+      setNewNumber('')
   }
 
   const handleDelete = (id, deleteThis) => {
-    const newarray=persons.filter(persons => persons !== deleteThis)
+    const newarray=persons.filter(persons => persons.name !== deleteThis)
     service
     .remove(id)
     .then(response =>{
-      console.log(response);
       setPersons(newarray)
       setErrorMessage(
-        `Contact ${deleteThis.name} deleted.`
+        `Contact ${deleteThis} deleted.`
       )
       setTimeout(() => {
         setErrorMessage(null)
@@ -102,7 +109,7 @@ const App = () => {
       <h2>add a new</h2>
       <Form submit={addNew} nameinput={newName} nameonChange={handlePhonebookNameChange} numberinput={newNumber} numberonChange={handlePhonebookNumberChange}/>   
       <h2>Numbers</h2>
-      {personsToShow.map(personsToShow =><PrintPersons key={personsToShow.name.toString()} name={personsToShow.name} number={personsToShow.number} onclick={() => handleDelete(personsToShow.id, personsToShow)}/>)}
+      <PrintPersons filter={filter} persons={persons} deletePerson={handleDelete} />
     </div>
   )
 

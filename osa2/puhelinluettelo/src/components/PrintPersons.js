@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react'
-import {handleDelete} from '../App';
+import React from "react";
 
+const Persons = (props) => {
+  return (
+    <div>
+      {props.filter
+        ? props.persons
+            .filter((person) => person.name.includes(props.filter)).map((person) => (<p key={person.id}>{person.name} {person.number}</p>))
+        : props.persons.map((person) => (
+            <p key={person.id}>{person.name}{" "}{person.number}
+            <button key={person.id+"button"} onClick={() => props.deletePerson(person.id, person.name)}>Delete</button>
+            </p>
+          ))}
+    </div>
+  );
+};
 
-const PrintPersons = ({name, number, onclick}) => {
-    
-    return (
-      <>
-        <p key={name+number}> {name} {number}</p>
-        <button key={name} onClick={onclick}>delete</button>
-      </>
-    )
-  }
-
-  export default PrintPersons;
+export default Persons;
